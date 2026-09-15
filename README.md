@@ -20,16 +20,22 @@
 3. Launch Valheim to generate the configuration file.
 
 ## Building from source
-The project is an SDK-style csproj and builds with the .NET 8 SDK (no Visual Studio needed):
+The project is an SDK-style csproj and builds with the .NET 8 SDK (no Visual Studio needed).
+[ServerSync](https://github.com/blaxxun-boop/ServerSync) is pulled in as a git submodule and compiled
+straight into the plugin, so clone with submodules:
+
+```bash
+git clone --recurse-submodules https://github.com/eoger/BuildResourceRequirements.git
+```
+
+or, in an existing checkout, `git submodule update --init`. Then:
 
 ```bash
 dotnet build -c Release -p:GamePath="C:\Program Files (x86)\Steam\steamapps\common\Valheim"
 ```
 
 `GamePath` defaults to the standard Steam location. `BepInExCore` defaults to `<GamePath>\BepInEx\core`
-and can be overridden the same way. `lib/ServerSync.dll` is a build of
-[blaxxun-boop/ServerSync](https://github.com/blaxxun-boop/ServerSync) compiled against Valheim 1.0.7 and is
-merged into the output DLL by ILRepack, so the plugin ships as a single file.
+and can be overridden the same way. The output is a single `bin/Release/BuildResourcesMod.dll`.
 
 ## Configuration
 The configuration file is generated in `BepInEx/config/Jammerbam.buildresourcesmod.cfg`.
