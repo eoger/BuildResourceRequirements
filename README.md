@@ -49,7 +49,7 @@ CraftingRequiresResources = true
 FurnitureRequiresResources = false
 BuildingWorkbenchRequiresResources = false   (Build)
 BuildingStonecutterRequiresResources = false (Heavy Building)
-DeepNorthRequiresResources = true            (Deep North, new build tab in Valheim 1.0)
+DeepNorthRequiresResources = false           (new in Valheim 1.0: the 67-degree steep roof/wall pieces)
 CultivatorRequiresResources = true
 HoeRequiresResources = true
 ```
@@ -94,7 +94,7 @@ This is my very first mod, and my first time coding in C#. There are things that
 ### 1.2.0
 - Updated for Valheim 1.0 (Unity 6). Rebuilt against the 1.0.7 game assemblies and BepInExPack_Valheim 5.4.2350.
 - Bundled ServerSync rebuilt for 1.0 (the old build crashed on load with a `MissingFieldException`).
-- Added the new **DeepNorth** build category to the config (defaults to requiring resources).
+- Added the new **DeepNorth** build category to the config. Despite the name it contains the new 67-degree steep roof, wall and beam pieces, so it defaults to free like the other building tabs.
 - Modded category config descriptions now use the category label from the piece table instead of an unlocalized `$category_N` token.
 - Fixed a null reference when a piece could not be resolved while checking requirements.
 - Config version requirement raised to 1.2.0 so 1.1.0 clients are rejected by 1.2.0 servers (they would not work on Valheim 1.0 anyway).
