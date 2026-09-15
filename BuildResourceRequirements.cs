@@ -73,8 +73,9 @@ namespace BuildResourcesModNamespace
             AddCategoryConfig("Furniture", "Require resources for Furniture category.", false);
             AddCategoryConfig("BuildingWorkbench", "Require resources for BuildingWorkbench category.", false);
             AddCategoryConfig("BuildingStonecutter", "Require resources for BuildingStonecutter category.", false);
-            // Added in Valheim 1.0: a dedicated build tab for Deep North pieces.
-            AddCategoryConfig("DeepNorth", "Require resources for DeepNorth category (Valheim 1.0+).", false);
+            // Added in Valheim 1.0: a dedicated build tab for Deep North pieces. Defaults to requiring resources
+            // since it is not yet clear which pieces end up in this tab.
+            AddCategoryConfig("DeepNorth", "Require resources for DeepNorth category (Valheim 1.0+).", true);
             AddCategoryConfig("Cultivator", "Require resources for the cultivator.", true);
             AddCategoryConfig("Hoe", "Require resources for the hoe.", true);
         
