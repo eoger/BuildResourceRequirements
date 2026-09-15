@@ -1,48 +1,51 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
-    <OutputPath>../bin/$(Configuration)</OutputPath>
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyName>BuildResourcesMod</AssemblyName>
+    <RootNamespace>BuildResourcesModNamespace</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <OutputPath>bin/$(Configuration)</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>none</DebugType>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <!--
+    Build paths. Override any of these on the command line, e.g.
+      dotnet build -c Release -p:GamePath="D:\Steam\steamapps\common\Valheim" -p:BepInExCore="D:\BepInEx\core"
+    GamePath   : Valheim install folder (Unity 6 / Valheim 1.0.x)
+    BepInExCore: folder containing BepInEx.dll and 0Harmony.dll (BepInExPack_Valheim 5.4.2350 or newer)
+    ServerSync : ServerSync.dll built against Valheim 1.0.x (bundled in ./lib, merged into the output by ILRepack)
+  -->
+  <PropertyGroup>
+    <GamePath Condition="'$(GamePath)' == ''">C:\Program Files (x86)\Steam\steamapps\common\Valheim</GamePath>
+    <GameManagedPath Condition="'$(GameManagedPath)' == ''">$(GamePath)\valheim_Data\Managed</GameManagedPath>
+    <BepInExCore Condition="'$(BepInExCore)' == ''">$(GamePath)\BepInEx\core</BepInExCore>
+    <ServerSync Condition="'$(ServerSync)' == ''">$(MSBuildThisFileDirectory)lib\ServerSync.dll</ServerSync>
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="UnityEngine">
-      <HintPath>$(GameManagedPath)/UnityEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>$(GameManagedPath)/UnityEngine.CoreModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.LocalizationModule">
-      <HintPath>$(GameManagedPath)/UnityEngine.LocalizationModule.dll</HintPath>
-    </Reference>
-    <Reference Include="BepInEx">
-      <HintPath>$(BepInEx)/BepInEx.dll</HintPath>
-    </Reference>
-    <Reference Include="assembly_valheim">
-      <HintPath>$(GameManagedPath)/assembly_valheim.dll</HintPath>
-    </Reference>
-    <Reference Include="0Harmony">
-      <HintPath>$(BepInEx)/0Harmony.dll</HintPath>
-    </Reference>
-    <Reference Include="ServerSync">
-      <HintPath>E:\Modding Stuff\Valheim\CustomLoadingScreens\lib/ServerSync.dll</HintPath>
-    </Reference>
-    <Reference Include="TextMeshPro">
-      <HintPath>$(GameManagedPath)/Unity.TextMeshPro.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>$(GameManagedPath)/UnityEngine.UI.dll</HintPath>
-    </Reference>
+    <Compile Include="BuildResourceRequirements.cs" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <GameManagedPath>C:\Program Files (x86)\Steam\steamapps\common\Valheim\valheim_Data\Managed</GameManagedPath>
-    <BepInEx>C:\Program Files (x86)\Steam\steamapps\common\Valheim\BepInEx\core</BepInEx>
-  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+    <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.34.2" PrivateAssets="all" />
+  </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.34.2" />
+    <Reference Include="BepInEx"><HintPath>$(BepInExCore)\BepInEx.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="0Harmony"><HintPath>$(BepInExCore)\0Harmony.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="assembly_valheim"><HintPath>$(GameManagedPath)\assembly_valheim.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="assembly_utils"><HintPath>$(GameManagedPath)\assembly_utils.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="assembly_guiutils"><HintPath>$(GameManagedPath)\assembly_guiutils.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine"><HintPath>$(GameManagedPath)\UnityEngine.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.CoreModule"><HintPath>$(GameManagedPath)\UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UI"><HintPath>$(GameManagedPath)\UnityEngine.UI.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.TextMeshPro"><HintPath>$(GameManagedPath)\Unity.TextMeshPro.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="ServerSync"><HintPath>$(ServerSync)</HintPath><Private>false</Private></Reference>
   </ItemGroup>
 
 </Project>

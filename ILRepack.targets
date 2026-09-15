@@ -3,14 +3,17 @@
     <Target Name="ILRepacker" AfterTargets="Build">
         <ItemGroup>
             <InputAssemblies Include="$(TargetPath)" />
-            <InputAssemblies Include="E:/Modding Stuff/Valheim/CustomLoadingScreens/lib/ServerSync.dll" />
+            <InputAssemblies Include="$(ServerSync)" />
+            <ILRepackLibs Include="$(OutputPath)" />
+            <ILRepackLibs Include="$(GameManagedPath)" />
+            <ILRepackLibs Include="$(BepInExCore)" />
         </ItemGroup>
-        <ILRepack Parallel="true" 
-                DebugInfo="true" 
-                Internalize="true" 
-                InputAssemblies="@(InputAssemblies)" 
-                OutputFile="$(TargetPath)" 
-                TargetKind="Dll" 
-                LibraryPath="$(OutputPath)" />
+        <ILRepack Parallel="true"
+                DebugInfo="false"
+                Internalize="true"
+                InputAssemblies="@(InputAssemblies)"
+                OutputFile="$(TargetPath)"
+                TargetKind="Dll"
+                LibraryPath="@(ILRepackLibs)" />
     </Target>
 </Project>

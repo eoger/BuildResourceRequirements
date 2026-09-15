@@ -2,7 +2,6 @@
 using BepInEx.Configuration;
 using HarmonyLib;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,15 +9,19 @@ using ServerSync;
 
 namespace BuildResourcesModNamespace
 {
-    [BepInPlugin("Jammerbam.buildresourcesmod", "Build Resources Mod", "1.1.0")]
+    [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
     public class BuildResourcesMod : BaseUnityPlugin
     {
+        public const string PluginGuid = "Jammerbam.buildresourcesmod";
+        public const string PluginName = "Build Resources Mod";
+        public const string PluginVersion = "1.2.0";
+
         private static BuildResourcesMod Instance;
         private static ConfigSync configSync = new ConfigSync("BuildResourcesMod")
         {
-            DisplayName = "Build Resources Mod",
-            CurrentVersion = "1.1.0",
-            MinimumRequiredVersion = "1.1.0",
+            DisplayName = PluginName,
+            CurrentVersion = PluginVersion,
+            MinimumRequiredVersion = PluginVersion,
             IsLocked = true,
             ModRequired = true
         };
@@ -70,6 +73,8 @@ namespace BuildResourcesModNamespace
             AddCategoryConfig("Furniture", "Require resources for Furniture category.", false);
             AddCategoryConfig("BuildingWorkbench", "Require resources for BuildingWorkbench category.", false);
             AddCategoryConfig("BuildingStonecutter", "Require resources for BuildingStonecutter category.", false);
+            // Added in Valheim 1.0: a dedicated build tab for Deep North pieces.
+            AddCategoryConfig("DeepNorth", "Require resources for DeepNorth category (Valheim 1.0+).", false);
             AddCategoryConfig("Cultivator", "Require resources for the cultivator.", true);
             AddCategoryConfig("Hoe", "Require resources for the hoe.", true);
         
@@ -123,20 +128,8 @@ namespace BuildResourcesModNamespace
         {
             Dbgl("Waiting for config sync to complete...");
 
-            // Use reflection to check for the private 'InitialSyncDone' property
-            var initialSyncDoneProperty = AccessTools.Property(configSync.GetType(), "InitialSyncDone");
-            if (initialSyncDoneProperty == null)
-            {
-                Dbglw("Error: Unable to find InitialSyncDone property.");
-                yield break;
-            }
-
-            // Wait until the config sync is complete
-            yield return new WaitUntil(() =>
-            {
-                bool syncDone = (bool)initialSyncDoneProperty.GetValue(configSync);
-                return syncDone;
-            });
+            // Wait until the config sync is complete (InitialSyncDone is public in current ServerSync)
+            yield return new WaitUntil(() => configSync.InitialSyncDone);
             ParseExceptions();
         }
 
@@ -232,7 +225,9 @@ namespace BuildResourcesModNamespace
                 "Furniture",
                 "BuildingWorkbench",
                 "BuildingStonecutter",
+                "DeepNorth",
                 "All",
+                "Max",
                 "Meads",
                 "Feasts",
                 "Food"
@@ -271,8 +266,17 @@ namespace BuildResourcesModNamespace
                         // Dynamically create or update configuration for this category
                         if (!CategoryConfigs.ContainsKey(category))
                         {
-                            LocalizationAsset locAsset = new LocalizationAsset();
-                            string localizedCategory = locAsset.GetLocalizedString($"$category_{category}") ?? category;
+                            // Valheim 1.0 piece tables carry a label per category; use it for the description
+                            // so modded (numeric) categories are identifiable in the config file.
+                            string localizedCategory = category;
+                            int labelIndex = pieceTable.m_categories != null ? pieceTable.m_categories.IndexOf(piece.m_category) : -1;
+                            if (labelIndex >= 0 && pieceTable.m_categoryLabels != null && labelIndex < pieceTable.m_categoryLabels.Count
+                                && !string.IsNullOrEmpty(pieceTable.m_categoryLabels[labelIndex]))
+                            {
+                                localizedCategory = Localization.instance != null
+                                    ? Localization.instance.Localize(pieceTable.m_categoryLabels[labelIndex])
+                                    : pieceTable.m_categoryLabels[labelIndex];
+                            }
 
                             Dbgl($"Adding new config entry for category: {localizedCategory}");
                             
@@ -394,17 +398,15 @@ namespace BuildResourcesModNamespace
 
         private bool ShouldRequireResources(Piece piece)
         {
-            if (LastPiece == piece.name)
-            {
-                return LastChecked;
-            }
-
             if (piece == null)
             {
                 Dbglw("Piece is null in ShouldRequireResources check.");
-                LastPiece = piece.name;
-                LastChecked = true;
                 return true; // Default to requiring resources if piece is null
+            }
+
+            if (LastPiece == piece.name)
+            {
+                return LastChecked;
             }
 
             string rawName = piece.name.Replace("(Clone)", "").Trim().ToLowerInvariant();
@@ -519,7 +521,7 @@ namespace BuildResourcesModNamespace
                         }
                     }
                     else if (!CraftingStation.HaveBuildStationInRange(piece.m_craftingStation.m_name, __instance.transform.position)
-                            && !ZoneSystem.instance.GetGlobalKey("NoWorkbench"))
+                            && !ZoneSystem.instance.GetGlobalKey(GlobalKeys.NoWorkbench))
                     {
                         __result = false;
                         return false; // Block placement if the station is out of range
@@ -618,11 +620,11 @@ namespace BuildResourcesModNamespace
         //Crafting skill and resource reduction handling
 
 
-        [HarmonyPatch(typeof(Player), "OnSkillLevelup")]
+        [HarmonyPatch(typeof(Player), nameof(Player.OnSkillLevelup))]
         public static class SkillChangePatch
         {
             [HarmonyPostfix]
-            public static void Postfix(Skills __instance, Skills.SkillType skill, float level)
+            public static void Postfix(Skills.SkillType skill, float level)
             {
                 if (skill != Skills.SkillType.Crafting || BuildResourcesMod.Instance == null) return;
 
