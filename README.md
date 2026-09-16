@@ -1,4 +1,6 @@
-# Build Resource Requirements
+# Build Resource Requirements (Updated for Valheim 1.0)
+
+> This is a fork of [Jammerbam's Build Resource Requirements](https://github.com/Jammerbamn/BuildResourceRequirements) ([original Thunderstore listing](https://thunderstore.io/c/valheim/p/Jammerbam/Build_Resource_Requirements/)), rebuilt for **Valheim 1.0** (Unity 6). All credit for the mod itself goes to Jammerbam; this fork only updates it for the current game version. Source: https://github.com/eoger/BuildResourceRequirements
 
 **Build Resources Requirements** is a mod that allows control over whether resources are required for specific build categories, tools, and pieces. This includes support for vanilla and modded categories, and configuration syncing. I wrote this mod because I didn't really like how the world modifier for disabling resources turned off everything, including the cultivator.
 
