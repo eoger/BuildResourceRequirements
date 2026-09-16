@@ -4,7 +4,7 @@ schemaVersion = "0.0.1"
 [package]
 namespace = "eoger"
 name = "BuildResourceRequirements_Updated"
-versionNumber = "1.2.0"
+versionNumber = "1.2.1"
 description = "Configurable build resource requirements per build category. Fork of Jammerbam's mod, updated for Valheim 1.0."
 websiteUrl = "https://github.com/eoger/BuildResourceRequirements"
 containsNsfwContent = false

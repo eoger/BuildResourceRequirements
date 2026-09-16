@@ -14,7 +14,7 @@ namespace BuildResourcesModNamespace
     {
         public const string PluginGuid = "Jammerbam.buildresourcesmod";
         public const string PluginName = "Build Resources Mod";
-        public const string PluginVersion = "1.2.0";
+        public const string PluginVersion = "1.2.1";
 
         private static BuildResourcesMod Instance;
         private static ConfigSync configSync = new ConfigSync("BuildResourcesMod")
@@ -470,6 +470,7 @@ namespace BuildResourcesModNamespace
         public static class ConsumeResourcesPatch
         {
             [HarmonyPrefix]
+            [HarmonyPriority(Priority.First)]
             public static bool Prefix(Piece.Requirement[] requirements, int qualityLevel, int itemQuality, int multiplier, Player __instance)
             {
                 if (BuildResourcesMod.Instance == null) return true;
@@ -503,6 +504,7 @@ namespace BuildResourcesModNamespace
         public static class HaveRequirementsPatch
         {
             [HarmonyPrefix]
+            [HarmonyPriority(Priority.First)]
             public static bool Prefix(Piece piece, Player.RequirementMode mode, ref bool __result, Player __instance)
             {
                 if (BuildResourcesMod.Instance == null) return true;

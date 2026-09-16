@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.1
+- Give the resource-consumption and requirement hooks the highest Harmony priority so they run before other mods that patch the same methods. Fixes free pieces still being charged (including from nearby chests) when AzuCraftyBoxes is installed.
+
 ## 1.2.0
 - Updated for Valheim 1.0 (Unity 6). Rebuilt against the 1.0.7 game assemblies and BepInExPack_Valheim 5.4.2350.
 - Bundled ServerSync rebuilt for 1.0 (the old build crashed on load).

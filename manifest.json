@@ -1,6 +1,6 @@
 {
     "name": "BuildResourceRequirements_Updated",
-    "version_number": "1.2.0",
+    "version_number": "1.2.1",
     "website_url": "https://github.com/eoger/BuildResourceRequirements",
     "description": "Configurable build resource requirements per build category. Fork of Jammerbam's mod, updated for Valheim 1.0.",
     "dependencies": [

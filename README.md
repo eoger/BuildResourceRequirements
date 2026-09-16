@@ -93,6 +93,9 @@ You can also use this same method to find the name of a piece to add it to excep
 This is my very first mod, and my first time coding in C#. There are things that will inevitably be broken as I haven't been able to test for all scenarios. Please report if anything goes wrong so I can fix it.
 
 ## Changelog
+### 1.2.1
+- Resource-consumption and requirement hooks now run at the highest Harmony priority. Fixes free pieces still being charged (including from nearby chests) when AzuCraftyBoxes is installed.
+
 ### 1.2.0
 - Updated for Valheim 1.0 (Unity 6). Rebuilt against the 1.0.7 game assemblies and BepInExPack_Valheim 5.4.2350.
 - Bundled ServerSync rebuilt for 1.0 (the old build crashed on load with a `MissingFieldException`).
